@@ -80,6 +80,11 @@ switch($modx->event->name) {
             $request = preg_replace('/^'.$localizator_key.'\//', '', $request);
         }
         $resource_id = (!$request) ? $modx->getOption('site_start', null, 1) : $modx->findResource($request);
+        $resource = $modx->getObject('modResource',$resource_id);
+        if ($resource_id && !$resource->get('published')){
+            $modx->log(modX::LOG_LEVEL_ERROR, '[Localizator] Не могу отобразить ресурс: ' . $resource_id . ' т.к. он не опубликован!');
+            exit();
+        }
         if($resource_id) {
             $modx->sendForward($resource_id);
         }
